@@ -3,8 +3,6 @@
 //********************
 const Promise = require('bluebird');
 const _ = require('lodash');
-const drivelist = Promise.promisifyAll(require('drivelist'));
-const ps = Promise.promisifyAll(require('ps-node'));
 const deasync = require('deasync');
 const exec = require('child_process').exec;
 const execSync = deasync(require('child_process').exec);
@@ -84,7 +82,7 @@ function testPassword(password, args) {
   // console.log('Query:', query);
   execSync(query);
   deasync.loopWhile(() => veracryptRunningSync());
-  console.log(args.letter, ' mounted?:', diskMountedSync(args.letter));
+  console.log(args.letter, 'mounted?:', diskMountedSync(args.letter));
   if(diskMountedSync(args.letter))
     return true;
   else return false;
@@ -106,17 +104,10 @@ function veracryptRunning(cb) {
 }
 
 function diskMounted(letter, cb) {
-  return drivelist.listAsync().then(drives => {
-    for(var i = 0; i < drives.length; i++) {
-      if(drives[i].mountpoint === (letter+':')) {
-        console.log('Drive mounted!');
-        return Promise.resolve(true);
-      }
-    }
-    return Promise.resolve(false);
-  }).then(res => {
-    cb(null, res);
-  }).catch(err => {
-    cb(err);
+
+  exec('wmic logicaldisk get caption', (err, stdout, stderr) => {
+    if(err && err.code !== 1) return cb(err);
+    const lines = stdout.split(/\r?\n/).map(line => line.trim());
+    return cb(null, _.includes(lines, letter+':'));
   });
 }
