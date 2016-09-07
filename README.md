@@ -6,6 +6,8 @@ Note that this uses the VeraCrypt CLI and goes through passwords one at a time s
 
 **Note that this program only currently works on Windows.**
 
+**This tool was created before I saw that [hashcat now has VeraCrypt support](https://twitter.com/hashcat/status/734125387362504704). I suggest using [hashcat](https://hashcat.net/hashcat/) instead, so this tool will no longer be maintained.**
+
 ## Requirements
 
 - [VeraCrypt](https://veracrypt.codeplex.com/) must be installed.
